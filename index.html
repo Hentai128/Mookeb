@@ -1,219 +1,280 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>نظرسنجی</title>
-<style>
-/* استفاده از فونت Vazirmatn برای زیبایی بیشتر - در صورت عدم دسترسی به اینترنت از Tahoma استفاده می‌شود */
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&display=swap');
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظرسنجی موکب شهدای کندر</title>
+  <style>
+/* فونت‌ها: لاله‌زار برای عنوان (حس سنتی/خوشنویسی) و وزیرمتن برای متن بدنه */
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg1:#080d24; 
-  --bg2:#121b42; 
-  --text:#f7f9ff; 
+  --bg-deep:#070b1a;
+  --bg-mid:#121b42;
+  --navy:#1c2b5c;
+  --blue:#4c6fcf;
+  --blue-light:#8b9dff;
+  --cyan:#71e6db;
+  --cyan-bright:#a8f2ea;
+  --text:#f7f9ff;
   --muted:#c6cbea;
-  --accent:#8b9dff; 
-  --accent2:#71e6db;
 }
 
 * { box-sizing:border-box; }
 
 body {
-  margin:0; 
-  min-height:100vh; 
-  overflow:hidden; 
+  margin:0;
+  min-height:100vh;
+  overflow:hidden;
   color:var(--text);
   font-family:'Vazirmatn', Tahoma, sans-serif;
-  display:flex; 
-  align-items:center; 
+  display:flex;
+  align-items:center;
   justify-content:center;
-  /* پس‌زمینه گرادینت تیره و عمیق */
-  background: radial-gradient(circle at 20% 20%, #23316b 0%, transparent 35%),
-             radial-gradient(circle at 80% 80%, #174e61 0%, transparent 32%),
-             linear-gradient(135deg, var(--bg1), var(--bg2));
+  background:
+    radial-gradient(circle at 18% 15%, rgba(76,111,207,.28) 0%, transparent 38%),
+    radial-gradient(circle at 82% 85%, rgba(113,230,219,.16) 0%, transparent 34%),
+    linear-gradient(160deg, var(--bg-deep), var(--bg-mid) 60%, #0a1130);
 }
 
-/* لایه ذرات متحرک در پس‌زمینه */
-#particles { 
-  position:fixed; 
-  inset:0; 
-  z-index:0; 
+#particles {
+  position:fixed;
+  inset:0;
+  z-index:0;
 }
 
-.wrap { 
-  position:relative; 
-  z-index:2; 
-  width:min(92%, 540px); 
+.wrap {
+  position:relative;
+  z-index:2;
+  width:min(92%, 540px);
 }
 
-/* استایل شیشه‌ای (Glassmorphism) */
+/* کارت شیشه‌ای */
 .card {
-  position:relative; 
-  overflow:hidden; 
-  padding:38px 30px 30px; 
-  border-radius:30px;
-  background: linear-gradient(135deg, rgba(255,255,255,.18), rgba(255,255,255,.055));
-  border: 1px solid rgba(255,255,255,.25); 
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px); 
-  box-shadow: 0 25px 80px rgba(0,0,0,.35), inset 0 1px rgba(255,255,255,.3);
-  animation: float 6s ease-in-out infinite;
+  position:relative;
+  overflow:hidden;
+  padding:44px 30px 30px;
+  border-radius:26px;
+  background: linear-gradient(150deg, rgba(255,255,255,.14), rgba(20,30,70,.18));
+  border: 1px solid rgba(113,230,219,.28);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 25px 80px rgba(0,0,0,.5), inset 0 1px rgba(255,255,255,.2);
+  animation: rise .7s cubic-bezier(.2,.8,.2,1) both, float 7s 0.7s ease-in-out infinite;
 }
 
-/* افکت نور متحرک روی کارت */
+@keyframes rise {
+  from { opacity:0; transform: translateY(22px) scale(.98); }
+  to   { opacity:1; transform: translateY(0) scale(1); }
+}
+
+/* نوار نور ظریف که از روی کارت عبور می‌کند */
 .card::before {
-  content:""; 
-  position:absolute; 
-  top:-80%; 
-  left:-60%; 
-  width:42%; 
+  content:"";
+  position:absolute;
+  top:-80%;
+  left:-60%;
+  width:38%;
   height:260%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.38), transparent);
-  transform: rotate(24deg); 
-  filter: blur(5px); 
-  animation: shine 6s ease-in-out infinite;
+  background: linear-gradient(90deg, transparent, rgba(168,242,234,.2), transparent);
+  transform: rotate(24deg);
+  filter: blur(6px);
+  animation: shine 7s ease-in-out infinite;
   pointer-events:none;
 }
 
-.badge { 
-  width:64px; 
-  height:64px; 
-  display:grid; 
-  place-items:center; 
-  margin:0 auto 18px; 
-  border-radius:20px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2)); 
-  box-shadow: 0 0 35px rgba(113,230,219,.35); 
-  font-size:30px; 
+/* --- نشان / لوگوی فانوس --- */
+.badge-wrap {
+  display:flex;
+  justify-content:center;
+  margin-bottom:6px;
 }
 
-h1 { 
-  text-align:center; 
-  margin:0; 
-  font-size:clamp(24px, 6vw, 34px); 
-  font-weight:800; 
+.logo {
+  position:relative;
+  width:150px;
+  animation: logo-in .8s cubic-bezier(.2,.8,.2,1) both, logo-glow 3.2s 0.8s ease-in-out infinite;
 }
 
-.subtitle { 
-  text-align:center; 
-  color:var(--muted); 
-  line-height:2; 
-  margin:12px 0 26px; 
-  font-size:14px; 
+.logo img {
+  width:100%;
+  display:block;
+  filter: drop-shadow(0 0 16px rgba(255,90,90,.35));
 }
 
-label { 
-  display:block; 
-  margin:0 4px 9px; 
-  color:#e8ebff; 
-  font-size:14px; 
+@keyframes logo-in {
+  from { opacity:0; transform: translateY(-10px) scale(.9); }
+  to   { opacity:1; transform: translateY(0) scale(1); }
 }
 
-/* استایل کادر متن */
-textarea { 
-  width:100%; 
-  min-height:165px; 
-  resize:vertical; 
-  border: 1px solid rgba(255,255,255,.22); 
-  border-radius:18px;
-  padding:17px; 
-  outline:none; 
-  color:#fff; 
-  font:inherit; 
-  line-height:1.9; 
-  background: rgba(3,8,28,.3); 
-  transition: .3s; 
+@keyframes logo-glow {
+  0%, 100% { filter: drop-shadow(0 0 14px rgba(255,90,90,.3)); }
+  50%      { filter: drop-shadow(0 0 24px rgba(255,90,90,.55)); }
+}
+
+h1 {
+  text-align:center;
+  margin:14px 0 0;
+  font-family:'Lalezar', 'Vazirmatn', sans-serif;
+  font-weight:400;
+  letter-spacing:.5px;
+  font-size:clamp(24px, 6.2vw, 33px);
+  color: var(--cyan-bright);
+  text-shadow: 0 0 22px rgba(113,230,219,.3);
+}
+
+/* جداکننده تزئینی */
+.divider {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin:14px 0 16px;
+}
+.divider .line {
+  height:1px;
+  width:46px;
+  background: linear-gradient(90deg, transparent, rgba(113,230,219,.65));
+}
+.divider .line.left { background: linear-gradient(270deg, transparent, rgba(113,230,219,.65)); }
+.divider .dot {
+  width:6px; height:6px;
+  transform: rotate(45deg);
+  background: var(--cyan);
+  box-shadow: 0 0 8px rgba(113,230,219,.7);
+}
+
+.subtitle {
+  text-align:center;
+  color:var(--muted);
+  line-height:2;
+  margin:0 0 26px;
+  font-size:14px;
+}
+
+label {
+  display:block;
+  margin:0 4px 9px;
+  color:#e8ebff;
+  font-size:14px;
+}
+
+textarea {
+  width:100%;
+  min-height:160px;
+  resize:vertical;
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius:16px;
+  padding:16px;
+  outline:none;
+  color:#fff;
+  font:inherit;
+  line-height:1.9;
+  background: rgba(3,8,28,.3);
+  transition: .3s;
 }
 
 textarea::placeholder { color:#adb5d2; }
 
-textarea:focus { 
-  border-color:var(--accent2); 
-  box-shadow: 0 0 0 4px rgba(113,230,219,.12), 0 0 28px rgba(113,230,219,.12); 
+textarea:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 4px rgba(113,230,219,.12), 0 0 26px rgba(113,230,219,.14);
 }
 
-/* استایل دکمه ارسال */
-button { 
-  width:100%; 
-  border:0; 
-  cursor:pointer; 
-  margin-top:18px; 
-  padding:15px; 
-  border-radius:16px; 
+button {
+  position:relative;
+  width:100%;
+  border:0;
+  cursor:pointer;
+  margin-top:18px;
+  padding:15px;
+  border-radius:14px;
   color:#07132b;
-  font:700 16px 'Vazirmatn'; 
-  background: linear-gradient(100deg, #a9b5ff, #71e6db, #a9b5ff); 
-  background-size: 200% 100%;
-  box-shadow: 0 12px 28px rgba(113,230,219,.2); 
-  transition: .3s; 
+  font:700 16px 'Vazirmatn';
+  background: linear-gradient(100deg, var(--blue-light), var(--cyan), var(--blue-light));
+  background-size: 220% 100%;
+  box-shadow: 0 12px 28px rgba(113,230,219,.2);
+  transition: .3s;
+  overflow:hidden;
 }
 
-button:hover { 
-  transform: translateY(-3px); 
-  background-position: 100% 0; 
-  box-shadow: 0 16px 35px rgba(113,230,219,.35); 
+button:hover {
+  transform: translateY(-3px);
+  background-position: 100% 0;
+  box-shadow: 0 16px 36px rgba(113,230,219,.35);
 }
 
 button:active { transform: scale(.98); }
 
-#status { 
-  min-height:26px; 
-  text-align:center; 
-  margin:15px 0 0; 
-  color:#aaf5df; 
-  font-size:14px; 
+button:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--cyan-bright);
+  outline-offset: 2px;
 }
 
-/* انیمیشن‌ها */
-@keyframes shine { 
-  0%, 20% { left: -70%; opacity: 0; } 
-  40% { opacity: 1; } 
-  70%, 100% { left: 145%; opacity: 0; } 
+#status {
+  min-height:26px;
+  text-align:center;
+  margin:15px 0 0;
+  color: var(--cyan-bright);
+  font-size:14px;
 }
 
-@keyframes float { 
-  0%, 100% { transform: translateY(0); } 
-  50% { transform: translateY(-8px); } 
+@keyframes shine {
+  0%, 20% { left: -70%; opacity: 0; }
+  40%     { opacity: 1; }
+  70%, 100% { left: 145%; opacity: 0; }
 }
 
-@media(max-width:480px){ 
-  .card { padding:30px 20px 22px; border-radius:24px; } 
-  textarea { min-height:145px; } 
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .card::before, .flame, .glow-ring { animation: none !important; }
+}
+
+@media(max-width:480px){
+  .card { padding:36px 20px 22px; border-radius:22px; }
+  textarea { min-height:145px; }
+  .logo { width:120px; }
 }
 </style>
-</head>
-<body>
-
-<canvas id="particles"></canvas>
-
-<main class="wrap">
-  <section class="card">
-    <div class="badge">.   </div>
+ </head>
+ <body>
+  <canvas id="particles"></canvas>
+  <main class="wrap">
+   <section class="card">
+    <div class="badge-wrap">
+     <div class="logo">
+      <img src="logo.png" alt="لوگوی شهدای کندر">
+     </div>
+    </div>
     <h1>نظرتان درباره موکب شهدای کندر</h1>
-    <p class="subtitle">برای بهبود عملکرد موکب پیشنهادات و انتقادات خود را با ما در میان بگذارید   </p>
-    
+    <div class="divider">
+     <span class="line left"></span><span class="dot"></span><span class="line"></span>
+    </div>
+    <p class="subtitle">برای بهبود عملکرد موکب، پیشنهادات و انتقادات خود را با ما در میان بگذارید</p>
     <!-- فراموش نکنید: آدرس Formspree خود را در قسمت action جایگزین کنید -->
     <form action="https://formspree.io/f/meajwlwe" method="POST" id="feedbackForm">
-      <label for="message">نظر شما به صورت کاملا ناشناس ارسال خواهد شد </label>
-      <textarea id="message" name="message" required maxlength="2000" placeholder="نظر خود را اینجا بنویسید..."></textarea>
-      <button type="submit">ارسال نظر ناشناس  ✨</button>
+     <label for="message">نظر شما به‌صورت کاملاً ناشناس ارسال خواهد شد</label> <textarea id="message" name="message" required maxlength="2000" placeholder="نظر خود را اینجا بنویسید..."></textarea>
+     <button type="submit">ارسال نظر ناشناس ✨</button>
     </form>
-    
     <p id="status"></p>
-  </section>
-</main>
-
-<script>
-/* --- بخش مدیریت ذرات متحرک در پس‌زمینه --- */
+   </section>
+  </main>
+  <script>
+/* --- ذرات شناور در پس‌زمینه --- */
 const canvas = document.getElementById('particles'),
-      ctx = canvas.getContext('2d'); 
+      ctx = canvas.getContext('2d');
 let dots = [];
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function resize() {
   canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight; 
-  dots = Array.from({ length: Math.min(90, Math.floor(window.innerWidth / 12)) }, () => ({
+  canvas.height = window.innerHeight;
+  const count = reduceMotion ? 0 : Math.min(90, Math.floor(window.innerWidth / 12));
+  dots = Array.from({ length: count }, () => ({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
     r: Math.random() * 2 + 0.5,
@@ -224,13 +285,13 @@ function resize() {
 }
 
 function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); 
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   dots.forEach(d => {
     d.x += d.vx;
     d.y += d.vy;
     if (d.x < 0 || d.x > canvas.width) d.vx *= -1;
     if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
-    
+
     ctx.beginPath();
     ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(174, 219, 255, ${d.a})`;
@@ -241,14 +302,13 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
-window.addEventListener('resize', resize); 
-resize(); 
+window.addEventListener('resize', resize);
+resize();
 animate();
 
 /* --- مدیریت فرم --- */
-const form = document.getElementById('feedbackForm'); 
+const form = document.getElementById('feedbackForm');
 form.addEventListener('submit', e => {
-  // اگر هنوز لینک Formspree را تغییر نداده باشید، از ارسال جلوگیری کن و پیام نمایش بده
   if (form.action.includes('YOUR_FORMSPREE_LINK')) {
     e.preventDefault();
     document.getElementById('status').textContent = 'لطفاً ابتدا لینک Formspree را در کد قرار دهید.';
@@ -256,6 +316,5 @@ form.addEventListener('submit', e => {
   }
 });
 </script>
-
-</body>
+ </body>
 </html>
