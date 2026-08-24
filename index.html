@@ -216,7 +216,117 @@ button:focus-visible, textarea:focus-visible {
   text-align:center;
   margin:15px 0 0;
   color: var(--cyan-bright);
+  font-size:14.5px;
+  font-weight:600;
+}
+
+#status.show {
+  animation: status-in .5s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes status-in {
+  from { opacity:0; transform: translateY(6px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+/* --- پنل پیام موفقیت (وسط صفحه) --- */
+.modal-overlay {
+  position:fixed;
+  inset:0;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background: rgba(4,8,22,.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity:0;
+  visibility:hidden;
+  transition: opacity .35s ease, visibility .35s ease;
+}
+
+.modal-overlay.show {
+  opacity:1;
+  visibility:visible;
+}
+
+.modal-panel {
+  position:relative;
+  width:min(92%, 380px);
+  text-align:center;
+  padding:36px 26px 28px;
+  border-radius:22px;
+  background: linear-gradient(150deg, rgba(255,255,255,.16), rgba(20,30,70,.24));
+  border: 1px solid rgba(113,230,219,.32);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 30px 90px rgba(0,0,0,.55), inset 0 1px rgba(255,255,255,.2);
+  transform: translateY(14px) scale(.94);
+  opacity:0;
+  transition: transform .4s cubic-bezier(.2,.8,.2,1), opacity .4s ease;
+}
+
+.modal-overlay.show .modal-panel {
+  transform: translateY(0) scale(1);
+  opacity:1;
+}
+
+.modal-icon {
+  width:64px;
+  height:64px;
+  margin:0 auto 16px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: radial-gradient(circle, rgba(113,230,219,.28), rgba(113,230,219,.05));
+  border: 1px solid rgba(113,230,219,.4);
+  box-shadow: 0 0 30px rgba(113,230,219,.35);
+}
+
+.modal-icon svg {
+  width:30px;
+  height:30px;
+}
+
+.modal-icon path {
+  stroke: var(--cyan-bright);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  stroke-dasharray: 30;
+  stroke-dashoffset: 30;
+  animation: draw-check .5s .25s ease forwards;
+}
+
+@keyframes draw-check {
+  to { stroke-dashoffset: 0; }
+}
+
+.modal-panel h3 {
+  margin:0 0 8px;
+  font-family:'Lalezar','Vazirmatn',sans-serif;
+  font-weight:400;
+  font-size:22px;
+  color: var(--cyan-bright);
+}
+
+.modal-panel p {
+  margin:0 0 22px;
+  color: var(--muted);
   font-size:14px;
+  line-height:1.9;
+}
+
+.modal-close {
+  width:auto;
+  display:inline-block;
+  padding:10px 30px;
+  margin:0;
+  font-size:14px;
+  box-shadow:none;
 }
 
 @keyframes shine {
@@ -263,6 +373,19 @@ button:focus-visible, textarea:focus-visible {
     <p id="status"></p>
    </section>
   </main>
+  <!-- پنل پیام موفقیت -->
+  <div class="modal-overlay" id="successModal">
+   <div class="modal-panel">
+    <div class="modal-icon">
+     <svg viewBox="0 0 24 24">
+      <path d="M4 12.5 L9.5 18 L20 6" />
+     </svg>
+    </div>
+    <h3>ارسال شد</h3>
+    <p>از نظر شما سپاسگزاریم 🌿</p>
+    <button type="button" class="modal-close" id="modalCloseBtn">باشه</button>
+   </div>
+  </div>
   <script>
 /* --- ذرات شناور در پس‌زمینه --- */
 const canvas = document.getElementById('particles'),
@@ -306,15 +429,59 @@ window.addEventListener('resize', resize);
 resize();
 animate();
 
-/* --- مدیریت فرم --- */
+/* --- مدیریت فرم (ارسال با AJAX تا صفحه عوض نشه) --- */
 const form = document.getElementById('feedbackForm');
-form.addEventListener('submit', e => {
-  if (form.action.includes('YOUR_FORMSPREE_LINK')) {
-    e.preventDefault();
-    document.getElementById('status').textContent = 'لطفاً ابتدا لینک Formspree را در کد قرار دهید.';
-    document.getElementById('status').style.color = '#ff8b8b';
+const statusEl = document.getElementById('status');
+const submitBtn = form.querySelector('button[type="submit"]');
+const successModal = document.getElementById('successModal');
+const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+function openModal() {
+  successModal.classList.add('show');
+}
+function closeModal() {
+  successModal.classList.remove('show');
+}
+modalCloseBtn.addEventListener('click', closeModal);
+successModal.addEventListener('click', e => {
+  if (e.target === successModal) closeModal();
+});
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const originalBtnText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'در حال ارسال...';
+  statusEl.classList.remove('show');
+  statusEl.textContent = '';
+
+  try {
+    const response = await fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (response.ok) {
+      form.reset();
+      openModal();
+      setTimeout(closeModal, 4000);
+    } else {
+      statusEl.style.color = '#ff8b8b';
+      statusEl.textContent = 'خطا در ارسال. لطفاً دوباره تلاش کنید.';
+      statusEl.classList.add('show');
+    }
+  } catch (err) {
+    statusEl.style.color = '#ff8b8b';
+    statusEl.textContent = 'خطا در اتصال. لطفاً دوباره تلاش کنید.';
+    statusEl.classList.add('show');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalBtnText;
   }
 });
+
 </script>
  </body>
 </html>
