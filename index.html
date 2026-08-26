@@ -49,6 +49,25 @@ body {
   width:min(92%, 540px);
 }
 
+.leaders-banner {
+  width:min(78%, 300px);
+  margin:0 auto 20px;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(113,230,219,.28);
+  box-shadow: 0 16px 40px rgba(0,0,0,.4);
+  animation: rise .7s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.leaders-banner img {
+  width:100%;
+  display:block;
+}
+
+@media(max-width:480px){
+  .leaders-banner { width:min(70%, 240px); }
+}
+
 /* کارت شیشه‌ای */
 .card {
   position:relative;
@@ -354,6 +373,9 @@ button:focus-visible, textarea:focus-visible {
  <body>
   <canvas id="particles"></canvas>
   <main class="wrap">
+   <div class="leaders-banner">
+    <img src="leaders.png" alt="مقام معظم رهبری و بزرگان">
+   </div>
    <section class="card">
     <div class="badge-wrap">
      <div class="logo">
