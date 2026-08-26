@@ -1,10 +1,10 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نظرسنجی موکب شهدای کندر</title>
-  <style>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظرسنجی موکب شهدای کندر</title>
+<style>
 /* فونت‌ها: لاله‌زار برای عنوان (حس سنتی/خوشنویسی) و وزیرمتن برای متن بدنه */
 @import url('https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@400;500;600;700;800&display=swap');
 
@@ -50,22 +50,25 @@ body {
 }
 
 .leaders-banner {
-  width:min(78%, 300px);
-  margin:0 auto 20px;
-  border-radius:18px;
+  width:76px;
+  height:76px;
+  margin:0 auto 14px;
+  border-radius:50%;
   overflow:hidden;
-  border:1px solid rgba(113,230,219,.28);
-  box-shadow: 0 16px 40px rgba(0,0,0,.4);
+  border:1px solid rgba(113,230,219,.35);
+  box-shadow: 0 8px 22px rgba(0,0,0,.4);
   animation: rise .7s cubic-bezier(.2,.8,.2,1) both;
 }
 
 .leaders-banner img {
   width:100%;
+  height:100%;
+  object-fit:cover;
   display:block;
 }
 
 @media(max-width:480px){
-  .leaders-banner { width:min(70%, 240px); }
+  .leaders-banner { width:64px; height:64px; }
 }
 
 /* کارت شیشه‌ای */
@@ -369,46 +372,52 @@ button:focus-visible, textarea:focus-visible {
   .logo { width:120px; }
 }
 </style>
- </head>
- <body>
-  <canvas id="particles"></canvas>
-  <main class="wrap">
-   <div class="leaders-banner">
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<main class="wrap">
+  <div class="leaders-banner">
     <img src="leaders.png" alt="مقام معظم رهبری و بزرگان">
-   </div>
-   <section class="card">
+  </div>
+  <section class="card">
     <div class="badge-wrap">
-     <div class="logo">
-      <img src="logo.png" alt="لوگوی شهدای کندر">
-     </div>
+      <div class="logo">
+        <img src="logo.png" alt="لوگوی شهدای کندر">
+      </div>
     </div>
+
     <h1>نظرتان درباره موکب شهدای کندر</h1>
-    <div class="divider">
-     <span class="line left"></span><span class="dot"></span><span class="line"></span>
-    </div>
+
+    <div class="divider"><span class="line left"></span><span class="dot"></span><span class="line"></span></div>
+
     <p class="subtitle">برای بهبود عملکرد موکب، پیشنهادات و انتقادات خود را با ما در میان بگذارید</p>
+
     <!-- فراموش نکنید: آدرس Formspree خود را در قسمت action جایگزین کنید -->
     <form action="https://formspree.io/f/meajwlwe" method="POST" id="feedbackForm">
-     <label for="message">نظر شما به‌صورت کاملاً ناشناس ارسال خواهد شد</label> <textarea id="message" name="message" required maxlength="2000" placeholder="نظر خود را اینجا بنویسید..."></textarea>
-     <button type="submit">ارسال نظر ناشناس ✨</button>
+      <label for="message">نظر شما به‌صورت کاملاً ناشناس ارسال خواهد شد</label>
+      <textarea id="message" name="message" required maxlength="2000" placeholder="نظر خود را اینجا بنویسید..."></textarea>
+      <button type="submit">ارسال نظر ناشناس ✨</button>
     </form>
+
     <p id="status"></p>
-   </section>
-  </main>
-  <!-- پنل پیام موفقیت -->
-  <div class="modal-overlay" id="successModal">
-   <div class="modal-panel">
+  </section>
+</main>
+
+<!-- پنل پیام موفقیت -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-panel">
     <div class="modal-icon">
-     <svg viewBox="0 0 24 24">
-      <path d="M4 12.5 L9.5 18 L20 6" />
-     </svg>
+      <svg viewBox="0 0 24 24"><path d="M4 12.5 L9.5 18 L20 6"/></svg>
     </div>
     <h3>ارسال شد</h3>
     <p>از نظر شما سپاسگزاریم 🌿</p>
     <button type="button" class="modal-close" id="modalCloseBtn">باشه</button>
-   </div>
   </div>
-  <script>
+</div>
+
+<script>
 /* --- ذرات شناور در پس‌زمینه --- */
 const canvas = document.getElementById('particles'),
       ctx = canvas.getContext('2d');
@@ -505,5 +514,6 @@ form.addEventListener('submit', async e => {
 });
 
 </script>
- </body>
+
+</body>
 </html>
