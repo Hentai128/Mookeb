@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>نظرسنجی موکب شهدای کندر</title>
-<style>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظرسنجی موکب شهدای کندر</title>
+  <style>
 /* فونت‌ها: لاله‌زار برای عنوان (حس سنتی/خوشنویسی) و وزیرمتن برای متن بدنه */
 @import url('https://fonts.googleapis.com/css2?family=Lalezar&family=Vazirmatn:wght@400;500;600;700;800&display=swap');
 
@@ -22,15 +22,21 @@
 
 * { box-sizing:border-box; }
 
+html {
+  scroll-behavior:smooth;
+  -webkit-text-size-adjust:100%;
+}
+
 body {
   margin:0;
   min-height:100vh;
-  overflow:hidden;
   color:var(--text);
   font-family:'Vazirmatn', Tahoma, sans-serif;
   display:flex;
   align-items:center;
   justify-content:center;
+  padding:24px 0;
+  -webkit-overflow-scrolling:touch;
   background:
     radial-gradient(circle at 18% 15%, rgba(76,111,207,.28) 0%, transparent 38%),
     radial-gradient(circle at 82% 85%, rgba(113,230,219,.16) 0%, transparent 34%),
@@ -203,6 +209,32 @@ textarea:focus {
   box-shadow: 0 0 0 4px rgba(113,230,219,.12), 0 0 26px rgba(113,230,219,.14);
 }
 
+textarea.input-error {
+  border-color: #e05a5a;
+  box-shadow: 0 0 0 4px rgba(224,90,90,.14);
+}
+
+.char-counter {
+  text-align:left;
+  font-size:12px;
+  color: var(--muted);
+  margin-top:6px;
+  opacity:.75;
+}
+
+.char-counter.limit-near { color:#f0c869; }
+.char-counter.limit-over { color:#e05a5a; }
+
+/* فیلد تله ضد اسپم - همیشه مخفیه، فقط رباتها پرش می‌کنن */
+.honeypot {
+  position:absolute;
+  left:-9999px;
+  width:1px;
+  height:1px;
+  opacity:0;
+  pointer-events:none;
+}
+
 button {
   position:relative;
   width:100%;
@@ -371,53 +403,76 @@ button:focus-visible, textarea:focus-visible {
   textarea { min-height:145px; }
   .logo { width:120px; }
 }
+
+/* --- فوتر: طراحی و توسعه --- */
+.site-footer {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  margin-top:18px;
+  opacity:.75;
+}
+
+.site-footer span {
+  font-size:12px;
+  color:#0a0a0a;
+  text-shadow: 0 0 8px rgba(113,230,219,.55), 0 0 2px rgba(113,230,219,.4);
+}
+
+.site-footer img {
+  width:16px;
+  height:16px;
+  object-fit:contain;
+  opacity:.9;
+}
 </style>
-</head>
-<body>
-
-<canvas id="particles"></canvas>
-
-<main class="wrap">
-  <div class="leaders-banner">
+ </head>
+ <body>
+  <canvas id="particles"></canvas>
+  <main class="wrap">
+   <div class="leaders-banner">
     <img src="leaders.png" alt="مقام معظم رهبری و بزرگان">
-  </div>
-  <section class="card">
+   </div>
+   <section class="card">
     <div class="badge-wrap">
-      <div class="logo">
-        <img src="logo.png" alt="لوگوی شهدای کندر">
-      </div>
+     <div class="logo">
+      <img src="logo.png" alt="لوگوی شهدای کندر">
+     </div>
     </div>
-
     <h1>نظرتان درباره موکب شهدای کندر</h1>
-
-    <div class="divider"><span class="line left"></span><span class="dot"></span><span class="line"></span></div>
-
+    <div class="divider">
+     <span class="line left"></span><span class="dot"></span><span class="line"></span>
+    </div>
     <p class="subtitle">برای بهبود عملکرد موکب، پیشنهادات و انتقادات خود را با ما در میان بگذارید</p>
-
     <!-- فراموش نکنید: آدرس Formspree خود را در قسمت action جایگزین کنید -->
     <form action="https://formspree.io/f/meajwlwe" method="POST" id="feedbackForm">
-      <label for="message">نظر شما به‌صورت کاملاً ناشناس ارسال خواهد شد</label>
-      <textarea id="message" name="message" required maxlength="2000" placeholder="نظر خود را اینجا بنویسید..."></textarea>
-      <button type="submit">ارسال نظر ناشناس ✨</button>
+     <label for="message">نظر شما به‌صورت کاملاً ناشناس ارسال خواهد شد</label> <textarea id="message" name="message" required maxlength="2000" placeholder="نظر خود را اینجا بنویسید..."></textarea>
+     <div class="char-counter" id="charCounter">۰ / ۲۰۰۰</div>
+     <!-- فیلد تله برای ربات‌ها: کاربر واقعی این رو نمی‌بینه و نباید پر بشه -->
+     <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="honeypot">
+     <button type="submit">ارسال نظر ناشناس ✨</button>
     </form>
-
     <p id="status"></p>
-  </section>
-</main>
-
-<!-- پنل پیام موفقیت -->
-<div class="modal-overlay" id="successModal">
-  <div class="modal-panel">
+   </section>
+   <footer class="site-footer">
+    <span>طراحی و توسعه توسط تیم سدرة المنتهی</span> <img src="sedrat-logo.png" alt="لوگوی تیم سدرة المنتهی">
+   </footer>
+  </main>
+  <!-- پنل پیام موفقیت -->
+  <div class="modal-overlay" id="successModal">
+   <div class="modal-panel">
     <div class="modal-icon">
-      <svg viewBox="0 0 24 24"><path d="M4 12.5 L9.5 18 L20 6"/></svg>
+     <svg viewBox="0 0 24 24">
+      <path d="M4 12.5 L9.5 18 L20 6" />
+     </svg>
     </div>
     <h3>ارسال شد</h3>
     <p>از نظر شما سپاسگزاریم 🌿</p>
     <button type="button" class="modal-close" id="modalCloseBtn">باشه</button>
+   </div>
   </div>
-</div>
-
-<script>
+  <script>
 /* --- ذرات شناور در پس‌زمینه --- */
 const canvas = document.getElementById('particles'),
       ctx = canvas.getContext('2d');
@@ -466,6 +521,64 @@ const statusEl = document.getElementById('status');
 const submitBtn = form.querySelector('button[type="submit"]');
 const successModal = document.getElementById('successModal');
 const modalCloseBtn = document.getElementById('modalCloseBtn');
+const messageField = document.getElementById('message');
+const charCounter = document.getElementById('charCounter');
+const honeypotField = form.querySelector('input[name="_gotcha"]');
+const MAX_LEN = 2000;
+
+/* شمارنده‌ی کاراکتر با اعداد فارسی */
+function toPersianDigits(n) {
+  const fa = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+  return String(n).replace(/\d/g, d => fa[d]);
+}
+function updateCounter() {
+  const len = messageField.value.length;
+  charCounter.textContent = `${toPersianDigits(len)} / ${toPersianDigits(MAX_LEN)}`;
+  charCounter.classList.toggle('limit-near', len > MAX_LEN * 0.9);
+}
+messageField.addEventListener('input', () => {
+  updateCounter();
+  messageField.classList.remove('input-error');
+});
+updateCounter();
+
+/* --- فیلتر الفاظ نامناسب (سمت کاربر) --- */
+const bannedWords = [
+  'کیر','کص','کوس','کونی','جنده','گاییدم','گاییده','گائیدم',
+  'حرومزاده','حروم زاده','مادرجنده','ننه جنده','کسکش','جاکش',
+  'kir','kos','koon','jende','koni'
+];
+
+function normalizeText(str) {
+  return str
+    .toLowerCase()
+    .replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, '') // حذف اعراب عربی/فارسی
+    .replace(/ي/g, 'ی')
+    .replace(/ك/g, 'ک')
+    .replace(/[\s.\-_*]+/g, ''); // حذف فاصله و کاراکترهای رایج برای دور زدن فیلتر
+}
+const normalizedBanned = bannedWords.map(normalizeText);
+
+function containsProfanity(text) {
+  const normalized = normalizeText(text);
+  return normalizedBanned.some(w => w && normalized.includes(w));
+}
+
+function showError(msg) {
+  statusEl.style.color = '#ff8b8b';
+  statusEl.textContent = msg;
+  statusEl.classList.remove('show');
+  void statusEl.offsetWidth; // ری‌استارت انیمیشن
+  statusEl.classList.add('show');
+}
+
+/* --- جلوگیری از ارسال پشت‌سرهم (ضد اسپم) --- */
+const COOLDOWN_MS = 20000;
+function remainingCooldown() {
+  const last = parseInt(localStorage.getItem('lastFeedbackSubmit') || '0', 10);
+  const diff = Date.now() - last;
+  return diff < COOLDOWN_MS ? Math.ceil((COOLDOWN_MS - diff) / 1000) : 0;
+}
 
 function openModal() {
   successModal.classList.add('show');
@@ -481,6 +594,29 @@ successModal.addEventListener('click', e => {
 form.addEventListener('submit', async e => {
   e.preventDefault();
 
+  // فیلد تله: اگه پر شده باشه یعنی ربات بوده، بی‌سروصدا رد می‌کنیم
+  if (honeypotField.value) return;
+
+  const text = messageField.value.trim();
+
+  if (text.length < 3) {
+    showError('لطفاً نظر خود را کامل‌تر بنویسید.');
+    messageField.classList.add('input-error');
+    return;
+  }
+
+  if (containsProfanity(text)) {
+    showError('لطفاً از الفاظ محترمانه استفاده کنید 🙏');
+    messageField.classList.add('input-error');
+    return;
+  }
+
+  const remaining = remainingCooldown();
+  if (remaining > 0) {
+    showError(`لطفاً ${toPersianDigits(remaining)} ثانیه صبر کنید و دوباره تلاش کنید.`);
+    return;
+  }
+
   const originalBtnText = submitBtn.textContent;
   submitBtn.disabled = true;
   submitBtn.textContent = 'در حال ارسال...';
@@ -495,18 +631,16 @@ form.addEventListener('submit', async e => {
     });
 
     if (response.ok) {
+      localStorage.setItem('lastFeedbackSubmit', Date.now().toString());
       form.reset();
+      updateCounter();
       openModal();
       setTimeout(closeModal, 4000);
     } else {
-      statusEl.style.color = '#ff8b8b';
-      statusEl.textContent = 'خطا در ارسال. لطفاً دوباره تلاش کنید.';
-      statusEl.classList.add('show');
+      showError('خطا در ارسال. لطفاً دوباره تلاش کنید.');
     }
   } catch (err) {
-    statusEl.style.color = '#ff8b8b';
-    statusEl.textContent = 'خطا در اتصال. لطفاً دوباره تلاش کنید.';
-    statusEl.classList.add('show');
+    showError('خطا در اتصال. لطفاً دوباره تلاش کنید.');
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = originalBtnText;
@@ -514,6 +648,5 @@ form.addEventListener('submit', async e => {
 });
 
 </script>
-
-</body>
+ </body>
 </html>
