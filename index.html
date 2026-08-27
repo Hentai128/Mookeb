@@ -411,13 +411,13 @@ button:focus-visible, textarea:focus-visible {
   justify-content:center;
   gap:6px;
   margin-top:18px;
-  opacity:.75;
 }
 
 .site-footer span {
-  font-size:12px;
-  color:#0a0a0a;
-  text-shadow: 0 0 8px rgba(113,230,219,.55), 0 0 2px rgba(113,230,219,.4);
+  font-size:12.5px;
+  font-weight:600;
+  color:#ffffff;
+  text-shadow: 0 0 10px rgba(113,230,219,.8), 0 0 4px rgba(113,230,219,.6);
 }
 
 .site-footer img {
@@ -517,6 +517,10 @@ animate();
 
 /* --- مدیریت فرم (ارسال با AJAX تا صفحه عوض نشه) --- */
 const form = document.getElementById('feedbackForm');
+
+// آدرس فرم دوم Formspree رو اینجا بذارید (برای ارسال هم‌زمان به ایمیل دوم)
+// مثال: 'https://formspree.io/f/xxxxxxxx'
+const SECOND_FORM_ACTION = 'https://formspree.io/f/mbgjraoa';
 const statusEl = document.getElementById('status');
 const submitBtn = form.querySelector('button[type="submit"]');
 const successModal = document.getElementById('successModal');
@@ -624,13 +628,28 @@ form.addEventListener('submit', async e => {
   statusEl.textContent = '';
 
   try {
-    const response = await fetch(form.action, {
-      method: 'POST',
-      body: new FormData(form),
-      headers: { 'Accept': 'application/json' }
-    });
+    const requests = [
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      })
+    ];
 
-    if (response.ok) {
+    // اگه آدرس فرم دوم پر شده باشه، هم‌زمان به اونم ارسال می‌کنیم
+    if (SECOND_FORM_ACTION) {
+      requests.push(
+        fetch(SECOND_FORM_ACTION, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        }).catch(() => null) // اگه فرم دوم خطا داد، جلوی نمایش موفقیت فرم اول رو نگیره
+      );
+    }
+
+    const [primaryResponse] = await Promise.all(requests);
+
+    if (primaryResponse.ok) {
       localStorage.setItem('lastFeedbackSubmit', Date.now().toString());
       form.reset();
       updateCounter();
@@ -649,4 +668,4 @@ form.addEventListener('submit', async e => {
 
 </script>
  </body>
-</html>
+ </html>
