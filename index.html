@@ -446,11 +446,12 @@ button:focus-visible, textarea:focus-visible {
     </div>
     <p class="subtitle">برای بهبود عملکرد موکب، پیشنهادات و انتقادات خود را با ما در میان بگذارید</p>
     <!-- فراموش نکنید: آدرس Formspree خود را در قسمت action جایگزین کنید -->
-    <form action="https://formspree.io/f/meajwlwe" method="POST" id="feedbackForm">
+    <form id="feedbackForm">
      <label for="message">نظر شما به‌صورت کاملاً ناشناس ارسال خواهد شد</label> <textarea id="message" name="message" required maxlength="2000" placeholder="نظر خود را اینجا بنویسید..."></textarea>
      <div class="char-counter" id="charCounter">۰ / ۲۰۰۰</div>
      <!-- فیلد تله برای ربات‌ها: کاربر واقعی این رو نمی‌بینه و نباید پر بشه -->
-     <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="honeypot">
+     <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="honeypot"> <!-- فیلد تله موردنیاز splitforms برای ضدهرزنامه (طبق مستندات، حتماً باید چک‌باکس باشه) -->
+     <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off"> <input type="hidden" name="form_loaded_at" id="formLoadedAt">
      <button type="submit">ارسال نظر ناشناس ✨</button>
     </form>
     <p id="status"></p>
@@ -515,12 +516,17 @@ window.addEventListener('resize', resize);
 resize();
 animate();
 
-/* --- مدیریت فرم (ارسال با AJAX تا صفحه عوض نشه) --- */
+/* --- مدیریت فرم (ارسال با AJAX تا splitforms، بدون تغییر صفحه) --- */
 const form = document.getElementById('feedbackForm');
+const SPLITFORMS_ENDPOINT = 'https://splitforms.com/api/submit';
 
-// آدرس فرم دوم Formspree رو اینجا بذارید (برای ارسال هم‌زمان به ایمیل دوم)
-// مثال: 'https://formspree.io/f/xxxxxxxx'
-const SECOND_FORM_ACTION = 'https://formspree.io/f/mbgjraoa';
+// Access Key دو فرمی که توی splitforms ساختید رو اینجا جایگزین کنید
+const ACCESS_KEY_1 = '  8b5c838b3225444b9d3fb655c2f3c42c';
+const ACCESS_KEY_2 = '  958b12ede12d467db201eed9673de242';
+
+const formLoadedAtField = document.getElementById('formLoadedAt');
+formLoadedAtField.value = Date.now();
+
 const statusEl = document.getElementById('status');
 const submitBtn = form.querySelector('button[type="submit"]');
 const successModal = document.getElementById('successModal');
@@ -628,20 +634,27 @@ form.addEventListener('submit', async e => {
   statusEl.textContent = '';
 
   try {
+    // برای هر ایمیل، یه فرم‌دیتای جدا با access_key مربوط به همون فرم می‌سازیم
+    function buildPayload(accessKey) {
+      const fd = new FormData(form);
+      fd.set('access_key', accessKey);
+      return fd;
+    }
+
     const requests = [
-      fetch(form.action, {
+      fetch(SPLITFORMS_ENDPOINT, {
         method: 'POST',
-        body: new FormData(form),
+        body: buildPayload(ACCESS_KEY_1),
         headers: { 'Accept': 'application/json' }
       })
     ];
 
-    // اگه آدرس فرم دوم پر شده باشه، هم‌زمان به اونم ارسال می‌کنیم
-    if (SECOND_FORM_ACTION) {
+    // اگه Access Key دوم پر شده باشه، هم‌زمان به اون ایمیل هم ارسال می‌کنیم
+    if (ACCESS_KEY_2 && ACCESS_KEY_2 !== 'PASTE_SECOND_ACCESS_KEY_HERE') {
       requests.push(
-        fetch(SECOND_FORM_ACTION, {
+        fetch(SPLITFORMS_ENDPOINT, {
           method: 'POST',
-          body: new FormData(form),
+          body: buildPayload(ACCESS_KEY_2),
           headers: { 'Accept': 'application/json' }
         }).catch(() => null) // اگه فرم دوم خطا داد، جلوی نمایش موفقیت فرم اول رو نگیره
       );
@@ -668,4 +681,4 @@ form.addEventListener('submit', async e => {
 
 </script>
  </body>
- </html>
+</html>
